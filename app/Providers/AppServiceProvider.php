@@ -15,8 +15,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(MessageRepositoryInterface::class, MessageRepository::class);
-        $this->app->bind(ConversationRepositoryInterface::class, ConversationRepository::class);
+        $this->app->bind(MessageRepositoryInterface::class, function() {
+            return new MessageRepository();
+        });
+        $this->app->bind(ConversationRepositoryInterface::class, function() {
+            return new ConversationRepository();
+        });
     }
 
     /**

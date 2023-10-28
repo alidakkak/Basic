@@ -1,45 +1,33 @@
 <?php
-
 namespace App\Traits;
 
 trait GeneralTrait
 {
 
-    public function getCurrentLang()
-    {
-        return app()->getLocale();
-    }
 
     public function returnError($errNum, $msg)
     {
         return response()->json([
-            'status' => false,
-            'errNum' => $errNum,
-            'msg' => $msg
+            'status' => $errNum,
+            'message' => $msg
         ]);
     }
 
 
-    public function returnSuccessMessage($msg = "success")
+    public function returnSuccessMessage($status,$msg = "success")
     {
-        return  response()->json([
-            'status' => 200,
-            'msg' => $msg
+        return  response()->json( [
+            'status' => $status,
+            'message' => $msg
         ]);
     }
 
-    public function returnData($key, $value, $keyo = "", $valueo = "")
+    public function returnData($status,$keys,$values)
     {
-        if (!$keyo == "" && !$valueo == "") {
-            return response()->json([
-                'status' => 200,
-                $keyo => $valueo,
-                $key => $value,
-            ]);
-        }
+        $data=array_merge( ['status' => $status],array_combine($keys,$values));
         return response()->json([
-            'status' => 200,
-            $key => $value
+            $data
         ]);
     }
+
 }

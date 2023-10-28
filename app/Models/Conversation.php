@@ -10,7 +10,7 @@ class Conversation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["user_id", "type","last_message_id"];
+    protected $fillable = ["user_id","label", "type","last_message_id","avatar","description"];
     public function lastMessage()
     {
         return $this->belongsTo(Message::class, 'last_message_id', 'id')

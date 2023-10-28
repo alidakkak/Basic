@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\chat\ConversationController;
+use App\Http\Controllers\chat\GroupController;
 use App\Http\Controllers\chat\MessageController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::group(["middleware"=>'check_user:admin,normal'],function (){
+Route::group(["middleware"=>'jwt.auth'],function (){
     // conversations
     Route::get("/IndexConversation",[ConversationController::class,'index']);
     Route::get("/ShowConversation",[ConversationController::class,'show']);
@@ -28,6 +29,10 @@ Route::group(["middleware"=>'check_user:admin,normal'],function (){
     Route::get("/getconversation",[ConversationController::class,'getconversation']);
     // messages
     Route::post("/CreateMessage",[MessageController::class,'store']);
+    //group
+    Route::post("/make_group",[GroupController::class,'make_group']);
+    Route::post("/add_members_for_group",[GroupController::class,'add_member_after_make_group']);
+
 });
 
 
