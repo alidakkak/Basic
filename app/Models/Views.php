@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class StarredMessage extends Model
+class Views extends Model
 {
     use HasFactory;
 
@@ -15,7 +15,7 @@ class StarredMessage extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function message() {
-        return $this->belongsTo(Message::class);
+    public function story() {
+        return $this->belongsTo(Story::class);
     }
 }

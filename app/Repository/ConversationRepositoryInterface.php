@@ -20,6 +20,6 @@ interface ConversationRepositoryInterface
 
     public function create_member_and_put_admin_group_maker(Request $request,Conversation $conversation);
 
-    public function check_is_already_exists_conversation(Request $request);
+   // public function check_is_already_exists_conversation(Request $request);
 
 }

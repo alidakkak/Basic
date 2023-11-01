@@ -47,7 +47,7 @@ class ConversationRepository implements ConversationRepositoryInterface
     {
         $conversation_id = $request->conversation_id;
         $conversation = Conversation::findOrFail($conversation_id);
-        $messages = $conversation->messages()->with('sender')->orderByDesc("id")->get();
+        $messages = $conversation->messages()->orderByDesc("id")->get();
         $keys=["count_messages","messages"];
         $values=[$messages->count(),MessageResource::collection($messages)];
 //        return response()->json(['message' => Debugbar::getData()["memory"]]);

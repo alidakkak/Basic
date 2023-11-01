@@ -12,7 +12,8 @@ class StarredMessageController extends Controller
      */
     public function index()
     {
-        //
+        $star = StarredMessage::where('user_id', auth()->user()->id)->get();
+        return $star;
     }
 
     /**
@@ -20,7 +21,12 @@ class StarredMessageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = auth()->user();
+        $star = StarredMessage::create([
+            'user_id' => $user->id,
+            'message_id' => $request->message_id
+        ]);
+        return response()->json('Added SuccessFully');
     }
 
     /**
@@ -28,7 +34,7 @@ class StarredMessageController extends Controller
      */
     public function show(StarredMessage $starredMessage)
     {
-        //
+
     }
 
     /**
@@ -42,8 +48,12 @@ class StarredMessageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(StarredMessage $starredMessage)
+    public function destroy(StarredMessage $star)
     {
-        //
+        $star->delete();
+        return response()->json([
+            "Starred Message Deleted SuccessFully",
+            $star
+        ]);
     }
 }
