@@ -4,6 +4,9 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\EmailVerifyController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+
+use App\Http\Controllers\Controller;
+
 use App\Http\Controllers\chat\MessageController;
 use App\Http\Controllers\chat\StoriesController;
 use App\Http\Controllers\StarredMessageController;
@@ -42,9 +45,11 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::delete('/stars/{star}', [StarredMessageController::class, 'destroy']);
 
     ///// Search Message
-    Route::post('/search', [MessageController::class, 'search']);
-    Route::get('/search', [MessageController::class, 'getMessageByDate']);
+    Route::group(["middleware"=>'check_membership:admin,member'],function () {
+        Route::get('/search', [MessageController::class, 'search']);
+    });
+//    Route::get('/search', [MessageController::class, 'getMessageByDate']);
 });
-
+Route::post("/import",[Controller::class,"importExcel"]);
 
 

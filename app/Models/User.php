@@ -28,7 +28,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function starredMessage() {
-        return $this->hasMany(StarredMessage::class);
+        return $this->belongsToMany(Message::class,StarredMessage::class);
     }
 
 
@@ -54,13 +54,35 @@ class User extends Authenticatable implements JWTSubject
     public function conversations()
     {
         return $this->belongsToMany(Conversation::class,"members")
-            ->latest("last_message_id")
-            ->withPivot(['role', 'joined_at']);
+            ->withPivot([  'joined_at', 'role','is_block','is_mute','is_pinned','is_archived'])
+            ->latest('last_message_id');
     }
-
+    public function pinnedconversations()
+    {
+        return $this->belongsToMany(Conversation::class,"members")
+            ->withPivot([  'joined_at', 'role','is_block','is_mute','is_pinned','is_archived'])
+            ->where("is_archived",0)
+            ->orderBy('is_pinned', 'desc')
+            ->latest('last_message_id');
+    }
+    public function archivedconversations()
+    {
+        return $this->belongsToMany(Conversation::class,"members")
+            ->withPivot([  'joined_at', 'role','is_block','is_mute','is_pinned','is_archived'])
+            ->where("is_archived",1)
+            ->latest('last_message_id');
+    }
     public function unreadmessage()
     {
         return $this->hasMany(Recipient::class,"user_id")->whereNull("read_at")->count();
+    }
+    public function hidemessage()
+    {
+        return $this->belongsToMany(Message::class,HideMessage::class);
+    }
+    public function messages()
+    {
+        return $this->hasMany(Message::class,"user_id");
     }
     public function generate_code()
     {

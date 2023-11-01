@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Message extends Model
 {
 
+
+    use HasFactory;
+
     use HasFactory,SoftDeletes;
 
     public function scopeSearch($query, $keyword) {
@@ -20,6 +23,9 @@ class Message extends Model
     protected $fillable = ["user_id","type","body"];
     public function sender(){
         return $this->belongsTo(User::class,"user_id");
+    }
+    public function conversation(){
+        return $this->belongsTo(Conversation::class,"user_id");
     }
     public function recipients()
     {
