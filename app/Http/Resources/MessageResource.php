@@ -20,7 +20,7 @@ class MessageResource extends JsonResource
         return [
             "Message_Id"=>$this->id,
             "Message_Type"=>$this->type,
-            "Message_Body"=>$this->body,
+            "Message_Body"=>$this->type=="text"?$this->body:asset($this->body),
             "Message_Created_at"=>$this->created_at->format('Y-m-d H:i:s'),
             "Message_Sender_Id"=>$this->sender->id,
             "Message_Sender_Name"=>$this->sender->name,

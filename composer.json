@@ -11,13 +11,16 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
+<<<<<<< HEAD
         "league/csv": "^9.11",
         "maatwebsite/excel": "^3.1",
         "phpoffice/phpspreadsheet": "^1.29",
+=======
+        "pusher/pusher-php-server": "^7.2",
+>>>>>>> c03bc665b7dc39de6f7ae9214690c2192c450347
         "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.9",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",

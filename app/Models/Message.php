@@ -9,7 +9,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Message extends Model
 {
 
+
     use HasFactory;
+
+    use HasFactory,SoftDeletes;
+
+    public function scopeSearch($query, $keyword) {
+        return $query->where('body', 'like',  $keyword . '%');
+    }
+
     protected $fillable = ["user_id","type","body"];
     public function sender(){
         return $this->belongsTo(User::class,"user_id");
@@ -21,6 +29,10 @@ class Message extends Model
     {
         return $this->hasMany(Recipient::class);
 
+    }
+
+    public function starredMessage() {
+        return $this->hasMany(StarredMessage::class);
     }
 
 }

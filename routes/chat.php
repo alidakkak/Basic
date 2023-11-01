@@ -26,9 +26,9 @@ Route::group(["middleware"=>'jwt.auth'],function (){
     Route::get("/IndexConversation",[ConversationController::class,'index']);
     Route::get("/ArchivedConversation",[ConversationController::class,'archived']);
 
-    Route::get("/ShowConversation",[ConversationController::class,'show']);
-    Route::get("/NumberOfUnreadMessage",[ConversationController::class,'NumberOfUnreadMessage']);
-    Route::put("/markAsRead",[ConversationController::class,'markAsRead']);
+    Route::get("/ShowConversation",[MessageController::class,'get_messages_for_conversation']);
+    Route::get("/NumberOfUnreadMessage",[MessageController::class,'NumberOfUnreadMessage']);
+    Route::put("/markAsRead",[MessageController::class,'markAsRead']);
     Route::get("/getconversation",[ConversationController::class,'getconversation']);
     // messages
     Route::post("/CreateMessage",[MessageController::class,'store']);

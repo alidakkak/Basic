@@ -17,14 +17,19 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'phone',
-        'password',
-        'code',
-        'expired_at'
-    ];
+    protected $guarded = ['id'];
+
+    public function story() {
+        return $this->hasMany(Story::class);
+    }
+
+    public function views() {
+        return $this->hasMany(Views::class);
+    }
+
+    public function starredMessage() {
+        return $this->belongsToMany(Message::class,StarredMessage::class);
+    }
 
 
     protected $hidden = [

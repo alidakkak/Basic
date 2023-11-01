@@ -10,6 +10,8 @@ use App\Repository\MessageRepository;
 use App\Repository\MessageRepositoryInterface;
 use App\Repository\RecipientRepository;
 use App\Repository\RecipientRepositoryInterface;
+use App\Repository\StoriesRepository;
+use App\Repository\StoriesRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -30,6 +32,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->bind(RecipientRepositoryInterface::class, function() {
             return new RecipientRepository();
+        });
+        $this->app->bind(StoriesRepositoryInterface::class, function () {
+            return new StoriesRepository();
         });
     }
 

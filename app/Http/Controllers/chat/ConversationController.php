@@ -40,22 +40,10 @@ class ConversationController extends Controller
 
     }
 
-    public function show(ConversationRequest $request)
-    {
-        return $this->conversation->show($request);
-    }
 
 
-    public function NumberOfUnreadMessage()
-    {
-        return $this->conversation->NumberOfUnreadMessage();
-    }
 
 
-    public function markAsRead(ConversationRequest $request)
-    {
-       return $this->conversation->markAsRead($request);
-    }
 
     public function delete($id)
     {

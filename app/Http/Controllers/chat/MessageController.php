@@ -4,22 +4,26 @@ namespace App\Http\Controllers\chat;
 
 use App\Events\MessageCreated;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ConversationRequest;
 use App\Http\Requests\CreateMessageRequest;
 use App\Http\Requests\MessageRequest;
+use App\Http\Resources\MessageResource;
 use App\Models\Conversation;
 use App\Models\HideMessage;
+use App\Models\Message;
 use App\Models\Recipient;
 use App\Repository\ConversationRepositoryInterface;
 use App\Repository\MemberRepositoryInterface;
 use App\Repository\MessageRepositoryInterface;
 use App\Repository\RecipientRepositoryInterface;
+use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class MessageController extends Controller
-{
+{ use GeneralTrait;
     protected $message,$conversation,$members,$recipient;
     public function __construct(MessageRepositoryInterface $message,ConversationRepositoryInterface $conversation,MemberRepositoryInterface $member,RecipientRepositoryInterface $recipient) {
         $this->message = $message;
@@ -51,7 +55,7 @@ class MessageController extends Controller
             elseif ($request->user_id) {
 
                 $conversation = $this->conversation->check_is_existing_conversation_between_two_user($request);
-                if (!$conversation) {
+                if ($conversation) {
                     foreach ($conversation->members as $member) {
                         if ( $member->pivot->is_block == 1) {
                             return response()->json(["status"=>403,"message"=>"blocked"]);
@@ -112,5 +116,31 @@ class MessageController extends Controller
 
             return $e->getMessage();
         }}
+
+    public function search(Request $request) {
+        $keyword = $request->keyword;
+        $messages=   Message::search($keyword)->where("conversation_id",$request->conversation_id)->get();
+        $keys=["messages"];
+        $values=[MessageResource::collection($messages)];
+//        return response()->json(['message' => Debugbar::getData()["memory"]]);
+        return  $this->returnData(200,$keys,$values);
+    }
+
+    public function get_messages_for_conversation(ConversationRequest $request)
+    {
+        return $this->message->show($request);
+    }
+
+
+    public function NumberOfUnreadMessage()
+    {
+        return $this->message->NumberOfUnreadMessage();
+    }
+
+
+    public function markAsRead(ConversationRequest $request)
+    {
+        return $this->message->markAsRead($request);
+    }
 }
 

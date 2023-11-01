@@ -67,43 +67,9 @@ class ConversationRepository implements ConversationRepositoryInterface
         return  $this->returnData(200,$keys,$values);
     }
 
-    public function show($request)
-    {
-        $conversation_id = $request->conversation_id;
-        $conversation = Conversation::findOrFail($conversation_id);
-        $messages = $conversation->messages()->with('sender')->orderByDesc("id")->get();
-        $keys=["count_messages","messages"];
-        $values=[$messages->count(),MessageResource::collection($messages)];
-//        return response()->json(['message' => Debugbar::getData()["memory"]]);
-        return  $this->returnData(200,$keys,$values);
-
-    }
 
 
-    public function NumberOfUnreadMessage()
-    {
 
-        $user = Auth::user();
-        $unread_message = $user->unreadmessage();
-        $keys=["Number_Of_Unread_Messages"];
-        $values=[$unread_message];
-        return  $this->returnData(200,$keys,$values);
-    }
-
-
-    public function markAsRead($request)
-    {
-        $conversation_id = $request->conversation_id;
-        $message_ids = Conversation::find($conversation_id)->messages()->pluck('id')->toArray();
-        Recipient::where('user_id', Auth::id())
-            ->whereNull('read_at')
-            ->whereIn("message_id", $message_ids)
-            ->update([
-                'read_at' => Carbon::now(),
-            ]);
-        $keys=["message"];
-        $values=['Messages marked as read'];
-        return  $this->returnData(200,$keys,$values);}
 
 
     public function delete($id)

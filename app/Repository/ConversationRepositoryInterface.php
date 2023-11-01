@@ -10,11 +10,8 @@ interface ConversationRepositoryInterface
     public function index() ;
     public function archived() ;
 
-    public function show($request);
 
-    public function NumberOfUnreadMessage();
 
-    public function markAsRead($request);
 
     public function delete($id);
 
@@ -22,9 +19,13 @@ interface ConversationRepositoryInterface
 
     public function fetch_conversation(Request $request) :Conversation;
 
+
     public function check_is_existing_conversation_between_two_user(Request $request);
     public function make_conversation_between_two_user(Request $request);
 
     public function update_last_message_conversation(Conversation $conversation,Message $message);
+
+//    public function check_is_already_exists_conversation(Request $request);
+
 
 }
