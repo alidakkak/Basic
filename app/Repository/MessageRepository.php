@@ -2,12 +2,17 @@
 
 namespace App\Repository;
 
+use App\Models\Conversation;
+use App\Models\User;
+use App\Traits\AttachFilesTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MessageRepository implements MessageRepositoryInterface
 {
+    use AttachFilesTrait;
+
     public function store($request)
     {
         $sender = Auth::user();
@@ -61,7 +66,7 @@ class MessageRepository implements MessageRepositoryInterface
 
             // update last message for this conversation
             $conversation->update(['last_message_id' => $message->id]);
-            broadcast(new MessageCreated($message,$recipient->user_id));
+//            broadcast(new MessageCreated($message,$recipient->user_id));
 
             DB::commit();
             return $message;
@@ -72,4 +77,36 @@ class MessageRepository implements MessageRepositoryInterface
             return['error' => $e->getMessage()];
         }
     }
+public function create_message(Request $request,Conversation $conversation){
+    try {
+        $sender = Auth::user();
+        $type=$request->post('type_message');
+        // add message for this conversation and sender
+        if($type=="attachment"){
+            $file=  $request->file("attachment");
+            $path="assets/chat_attachment";
+            $name=$file->getClientOriginalName();
+            $body_message = $this->uploade_image($name,$path,$file);
+        }
+        elseif ($type=="text"){
+            $body_message=$request->post('message');
+        }
+
+        $message = $conversation
+            ->messages()
+            ->create([
+                'user_id' => $sender->id,
+                'type' => $type,
+                'body' => $body_message,
+            ]);
+
+
+return $message;
+    }
+    catch (\Exception $e) {
+        DB::rollBack();
+        return['error' => $e->getMessage()];
+    }
+}
+
 }

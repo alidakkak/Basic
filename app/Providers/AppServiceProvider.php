@@ -4,8 +4,12 @@ namespace App\Providers;
 
 use App\Repository\ConversationRepository;
 use App\Repository\ConversationRepositoryInterface;
+use App\Repository\MemberRepository;
+use App\Repository\MemberRepositoryInterface;
 use App\Repository\MessageRepository;
 use App\Repository\MessageRepositoryInterface;
+use App\Repository\RecipientRepository;
+use App\Repository\RecipientRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,6 +24,12 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->bind(ConversationRepositoryInterface::class, function() {
             return new ConversationRepository();
+        });
+        $this->app->bind(MemberRepositoryInterface::class, function() {
+            return new MemberRepository();
+        });
+        $this->app->bind(RecipientRepositoryInterface::class, function() {
+            return new RecipientRepository();
         });
     }
 

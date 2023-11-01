@@ -36,9 +36,11 @@ class Conversation extends Model
     {
         return $this->belongsToMany(User::class, Member::class)
             ->withPivot([
-                'joined_at', 'role'
+                'joined_at', 'role','is_block','is_mute','is_pinned','is_archived'
             ]);
     }
+
+
 
     public function messages()
     {

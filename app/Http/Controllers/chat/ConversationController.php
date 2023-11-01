@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\chat;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ConversationRequest;
+use App\Http\Requests\FetchInformationGroupRequest;
+use App\Http\Resources\FetchInformationConversationResource;
 use App\Models\Conversation;
 use App\Models\Member;
 use App\Models\Message;
@@ -27,9 +30,17 @@ class ConversationController extends Controller
     {
         return $this->conversation->index();
     }
+    public function archived()
+    {
+        try{
+            return $this->conversation->archived();
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
 
+    }
 
-    public function show(Request $request)
+    public function show(ConversationRequest $request)
     {
         return $this->conversation->show($request);
     }
@@ -41,7 +52,7 @@ class ConversationController extends Controller
     }
 
 
-    public function markAsRead(Request $request)
+    public function markAsRead(ConversationRequest $request)
     {
        return $this->conversation->markAsRead($request);
     }
@@ -49,6 +60,21 @@ class ConversationController extends Controller
     public function delete($id)
     {
         return $this->conversation->delete($id);
+    }
+
+    public function fetch_information_conversation(FetchInformationGroupRequest $request)
+    {
+        try{
+
+                $conversation = $this->conversation->fetch_conversation($request);
+
+            $keys=['conversation'];
+            $values=[FetchInformationConversationResource::make($conversation)];
+            return  $this->returnData(204,$keys,$values);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+
     }
 
 }

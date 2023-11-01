@@ -6,7 +6,9 @@ use App\Http\Resources\ConversationResource;
 use App\Http\Resources\MessageResource;
 use App\Models\Conversation;
 use App\Models\Member;
+use App\Models\Message;
 use App\Models\Recipient;
+use App\Models\User;
 use App\Traits\AttachFilesTrait;
 use App\Traits\GeneralTrait;
 use Carbon\Carbon;
@@ -21,7 +23,30 @@ class ConversationRepository implements ConversationRepositoryInterface
     public function index()
     {
         $user = Auth::user();
-        $conversations = $user->conversations()->with([
+        $conversations = $user->pinnedconversations()->with([
+            "lastMessage" => function ($builder) {
+                $builder->with(["sender" => function ($builder) {
+                    $builder->select("id", "name");
+                }]);
+            },
+            "members" => function ($builder) use ($user) {
+                $builder->where("user_id", "<>", $user->id)->select("name");
+            }
+        ])->withCount([
+            'recipients as new_messages' => function ($builder) use ($user) {
+                $builder->where('recipients.user_id', $user->id)
+                    ->whereNull('read_at');
+            }
+        ])->get();
+        $keys=["conversations"];
+        $values=[ConversationResource::collection($conversations)];
+//        return response()->json(['message' => Debugbar::getData()["memory"]]);
+        return  $this->returnData(200,$keys,$values);
+    }
+    public function archived()
+    {
+        $user = Auth::user();
+        $conversations = $user->archivedconversations()->with([
             "lastMessage" => function ($builder) {
                 $builder->with(["sender" => function ($builder) {
                     $builder->select("id", "name");
@@ -42,7 +67,6 @@ class ConversationRepository implements ConversationRepositoryInterface
         return  $this->returnData(200,$keys,$values);
     }
 
-
     public function show($request)
     {
         $conversation_id = $request->conversation_id;
@@ -61,7 +85,9 @@ class ConversationRepository implements ConversationRepositoryInterface
 
         $user = Auth::user();
         $unread_message = $user->unreadmessage();
-        return $this->returnData("Number_Of_Unread_Messages", $unread_message);
+        $keys=["Number_Of_Unread_Messages"];
+        $values=[$unread_message];
+        return  $this->returnData(200,$keys,$values);
     }
 
 
@@ -75,8 +101,9 @@ class ConversationRepository implements ConversationRepositoryInterface
             ->update([
                 'read_at' => Carbon::now(),
             ]);
-        return $this->returnData("message", 'Messages marked as read');
-    }
+        $keys=["message"];
+        $values=['Messages marked as read'];
+        return  $this->returnData(200,$keys,$values);}
 
 
     public function delete($id)
@@ -111,43 +138,65 @@ class ConversationRepository implements ConversationRepositoryInterface
         }
 
     }
-    public function create_member_and_put_admin_group_maker (Request $request,Conversation $conversation)
+    public function fetch_conversation(Request $request) :Conversation
     {
         try {
-            $users_id[0]["user_id"]=Auth::id();
-            $users_id[0]["conversation_id"]=$conversation->id;
-            $users_id[0]["role"]="admin";
+            $conversation = Conversation::find($request->conversation_id);
+            return $conversation;
 
-            foreach ($request->users as $index=>$user_id)
-            {
-                $users_id[$index+1]["user_id"]=$user_id;
-                $users_id[$index+1]["conversation_id"]=$conversation->id;
-                $users_id[$index+1]["role"]="member";
-            }
-            //check if existing repeat value
-            $is_repeat=false;
-            foreach ($users_id as $user_id) {
-                $count=0;
-                foreach ($users_id as $user_id2) {
-                    if ($user_id2["user_id"]== $user_id["user_id"]) {
-                        $count++;
-                        }
-                    if ($count>1){
-                        $is_repeat=true;
-                        break;
-                    }
-                }
-            }
-
-            if ($is_repeat==false) {
-                Member::insert($users_id);
-            }
-            return $is_repeat;
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return $e->getMessage();
         }
+    }
+    public function check_is_existing_conversation_between_two_user(Request $request)
+{
+    try {
+    $sender = Auth::user();
+    $receiver = User::find($request->post('user_id'));
+    $conversation=  $sender
+        ->conversations()
+        ->where("type","peer")
+        ->whereHas('members',function ($builder) use ($receiver){
+            $builder->where('user_id',$receiver->id);
+        })
+        ->first();
+    return $conversation;
 
+    } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+}
+    public function make_conversation_between_two_user(Request $request)
+    {
+
+        try {
+            $sender = Auth::user();
+            $receiver = User::find($request->post('user_id'));
+            $conversation = Conversation::create([
+                "user_id" => $sender->id,
+                "type" => "peer",
+            ]);
+            // add members for this conversation
+            $conversation->members()->attach([
+                $sender->id => ['joined_at' => now()],
+                $receiver->id => ['joined_at' => now()],
+            ]);
+            return $conversation;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    public function update_last_message_conversation(Conversation $conversation,Message $message)
+    {
+
+        try {
+
+         return   $conversation->update(['last_message_id' => $message->id]);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 }
+
 

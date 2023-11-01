@@ -9,10 +9,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Message extends Model
 {
 
-    use HasFactory,SoftDeletes;
+    use HasFactory;
     protected $fillable = ["user_id","type","body"];
     public function sender(){
         return $this->belongsTo(User::class,"user_id");
+    }
+    public function conversation(){
+        return $this->belongsTo(Conversation::class,"user_id");
     }
     public function recipients()
     {
