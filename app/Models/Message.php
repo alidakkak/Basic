@@ -12,7 +12,9 @@ class Message extends Model
     use HasFactory,SoftDeletes;
 
     public function scopeSearch($query, $keyword) {
-        return $query->where('body', 'like',  $keyword . '%');
+        return $query->where('body', 'like',  $keyword . '%')
+
+            ;
     }
 
     protected $fillable = ["user_id","type","body"];
