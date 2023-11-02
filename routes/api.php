@@ -4,13 +4,10 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\EmailVerifyController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-
-use App\Http\Controllers\Controller;
-
 use App\Http\Controllers\chat\MessageController;
+use App\Http\Controllers\chat\StarredMessageController;
 use App\Http\Controllers\chat\StoriesController;
-use App\Http\Controllers\StarredMessageController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 
 /*

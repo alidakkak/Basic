@@ -34,10 +34,12 @@ public function create_message(Request $request,Conversation $conversation){
             $body_message=$request->post('message');
         }
 
+
         $message = $conversation
             ->messages()
             ->create([
                 'user_id' => $sender->id,
+                'story_id'=>$request->story_id,
                 'type' => $type,
                 'body' => $body_message,
             ]);

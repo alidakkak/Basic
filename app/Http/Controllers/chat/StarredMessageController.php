@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\chat;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\MessageRequest;
-use App\Http\Resources\ConversationResource;
 use App\Models\StarredMessage;
 use App\Traits\GeneralTrait;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 
 class StarredMessageController extends Controller
 {

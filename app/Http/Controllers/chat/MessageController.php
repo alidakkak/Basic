@@ -12,6 +12,7 @@ use App\Models\Conversation;
 use App\Models\HideMessage;
 use App\Models\Message;
 use App\Models\Recipient;
+use App\Models\Story;
 use App\Repository\ConversationRepositoryInterface;
 use App\Repository\MemberRepositoryInterface;
 use App\Repository\MessageRepositoryInterface;
@@ -23,7 +24,8 @@ use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class MessageController extends Controller
-{ use GeneralTrait;
+{
+    use GeneralTrait;
     protected $message,$conversation,$members,$recipient;
     public function __construct(MessageRepositoryInterface $message,ConversationRepositoryInterface $conversation,MemberRepositoryInterface $member,RecipientRepositoryInterface $recipient) {
         $this->message = $message;
@@ -35,6 +37,11 @@ class MessageController extends Controller
     public function store(CreateMessageRequest $request) {
         DB::beginTransaction();
         try {
+                if ($request->story_id && !$request->user_id)
+                {
+                 $story=Story::find($request->story_id);
+                $request->merge(["user_id"=>$story->user->id]);
+                }
             if ($request->conversation_id){
                 $membership=$this->members->check_membership_for_conversation($request);
                 if (!$membership) {

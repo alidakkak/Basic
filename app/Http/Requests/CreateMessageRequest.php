@@ -32,8 +32,9 @@ class CreateMessageRequest extends FormRequest
     public function rules(): array
     {
             return [
-                "conversation_id"=> "required_without:user_id|exists:conversations,id",
-                "user_id"=> "required_without:conversation_id|exists:users,id",
+                "conversation_id"=> "required_without_all:user_id,story_id|exists:conversations,id",
+                "user_id"=> "required_without_all:conversation_id,story_id|exists:users,id",
+                "story_id"=> "required_without_all:conversation_id,user_id|exists:stories,id",
                 "type_message"=>"required|in:text,attachment",
                 'message' =>[ Rule::requiredIf(function ()  {
                     return $this->type_message === 'text';

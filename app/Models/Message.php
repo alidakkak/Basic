@@ -18,7 +18,7 @@ class Message extends Model
         return $query->where('body', 'like',  $keyword . '%');
     }
 
-    protected $fillable = ["user_id","type","body"];
+    protected $fillable = ["user_id","type","body","story_id"];
     public function sender(){
         return $this->belongsTo(User::class,"user_id");
     }

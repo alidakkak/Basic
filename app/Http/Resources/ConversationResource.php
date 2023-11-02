@@ -17,6 +17,7 @@ class ConversationResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
      $label_peer=$this->members->isNotEmpty()==true?$this->members[0]->name :"anonymous";
         return [
             "Conversation_Id"=>$this->id,
