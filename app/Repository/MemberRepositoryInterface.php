@@ -14,5 +14,5 @@ interface MemberRepositoryInterface
     public function check_is_existing_admin(Conversation $conversation);
     public function check_is_existing_members(Conversation $conversation);
     public function make_admin_for_group_after_exit_admin(Conversation $conversation);
-    public function check_membership_for_conversation(Request $request);
+    public function check_membership_for_conversation(Request $request,int $user_id);
 }

@@ -41,10 +41,14 @@ Route::group(["middleware"=>'jwt.auth'],function (){
     Route::group(["middleware"=>'check_membership:admin,member'],function (){
         Route::delete("/exit_from_group",[GroupController::class,'exit_from_group']);
         Route::get("/fetch_information_conversation",[ConversationController::class,'fetch_information_conversation']);
+
     });
     Route::group(["middleware"=>'check_membership:admin'],function (){
         Route::post("/add_members_for_group",[GroupController::class,'add_member_after_make_group']);
         Route::delete("/delete_member_for_group",[GroupController::class,'delete_member_of_group']);
+        Route::put("/make_member_admin",[GroupController::class,'make_member_admin']);
+        Route::put("/make_member_normal",[GroupController::class,'make_member_normal']);
+
     });
     Route::put("/pinned_and_unpinned",[FeatureController::class,'pinned_unpinned']);
     Route::put("/archived_and_unarchived",[FeatureController::class,'archived_unarchived']);

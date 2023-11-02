@@ -134,11 +134,11 @@ catch (\Exception $e) {
         return $e->getMessage();
         }
     }
-    public function check_membership_for_conversation(Request $request){
+    public function check_membership_for_conversation(Request $request,$user_id){
         try {
             $membership= Member::
             where("conversation_id",$request->conversation_id)
-                ->where("user_id",Auth::id())
+                ->where("user_id",$user_id)
                 ->first();
             return $membership;
         } catch (\Exception $e) {

@@ -43,7 +43,7 @@ class MessageController extends Controller
                 $request->merge(["user_id"=>$story->user->id]);
                 }
             if ($request->conversation_id){
-                $membership=$this->members->check_membership_for_conversation($request);
+                $membership=$this->members->check_membership_for_conversation($request,Auth::id());
                 if (!$membership) {
                     return response()->json(["message" => " you  are not a member of this conversation"]);
                 }

@@ -22,7 +22,7 @@ class FeatureController extends Controller
     public function pinned_unpinned(ConversationRequest $request)
     {
         try {
-            $membership=$this->members->check_membership_for_conversation($request);
+            $membership=$this->members->check_membership_for_conversation($request,Auth::id());
             if (!$membership)
             {
                 return response()->json([["message"=>"not found conversation"]]);
@@ -45,7 +45,7 @@ class FeatureController extends Controller
     {
 
         try {
-            $membership=$this->members->check_membership_for_conversation($request);
+            $membership=$this->members->check_membership_for_conversation($request,Auth::id());
 
             if (!$membership)
             {
@@ -69,7 +69,7 @@ class FeatureController extends Controller
     public function muted_unmute(ConversationRequest $request)
     {
         try {
-            $membership=$this->members->check_membership_for_conversation($request);
+            $membership=$this->members->check_membership_for_conversation($request,Auth::id());
 
             if (!$membership)
             {

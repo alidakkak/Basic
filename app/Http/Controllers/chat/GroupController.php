@@ -14,6 +14,7 @@ use App\Http\Resources\ConversationResource;
 use App\Http\Resources\FetchInformationConversationResource;
 use App\Models\Conversation;
 use App\Models\Member;
+use App\Models\User;
 use App\Repository\ConversationRepositoryInterface;
 use App\Repository\MemberRepositoryInterface;
 use App\Traits\AttachFilesTrait;
@@ -118,5 +119,46 @@ class GroupController extends Controller
             return $e->getMessage();
         }
     }
+    public function make_member_admin(DeletedMemberRequest$request)
+    {
+        try {
+            $conversation=  $this->conversation->fetch_conversation($request);
+            $user=User::find($request->user_id);
+            if(!$this->members->check_membership_for_conversation($request,$user->id))
+            {
+                return response()->json(["status"=>404,"message"=>"user not found"]);
+            }
+            $conversation->members()->where("user_id",$request->user_id)->first()->pivot->update(["role"=>"admin"]);
+            $keys=["message",];
+            $values=["Make Member Admin successfully"];
+            return  $this->returnData(202,$keys,$values);
+
+
+
+             } catch (\Exception $e) {
+            return $e->getMessage();
+                }
+    }
+    public function make_member_normal(DeletedMemberRequest$request)
+    {
+        try {
+            $conversation=  $this->conversation->fetch_conversation($request);
+            $user=User::find($request->user_id);
+            if(!$this->members->check_membership_for_conversation($request,$user->id))
+            {
+                return response()->json(["status"=>404,"message"=>"user not found"]);
+            }
+            $conversation->members()->where("user_id",$request->user_id)->first()->pivot->update(["role"=>"member"]);
+            $keys=["message",];
+            $values=["Make Member Normal successfully"];
+            return  $this->returnData(202,$keys,$values);
+
+
+
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
 
 }
